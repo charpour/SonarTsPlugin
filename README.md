@@ -40,11 +40,9 @@ It's presented only for the interested, and the brave.
 To more easily support changes to the rules TsLint understands, the plugin no longer generates a TsLint configuration file for you but instead you must now specify your own using the sonar.ts.tslintconfigpath configuration property (either in the web interface, or in your sonar-project.properties file).
 
 ##Requirements
-* Java 1.7+
-* SonarQube 4.4+ (may or may not work with others)
+* Java 1.8+
+* SonarQube 5.4 LTS+
 * TsLint 2.4.0+
-
-The plugin has so far *only been tested on Windows* and it'll be no surprise if it fails on Linux just now.
 
 ##Building
 * Download the source
@@ -52,16 +50,16 @@ The plugin has so far *only been tested on Windows* and it'll be no surprise if 
 
 ##Installation
 * Install Node.js
-* Install TsLint (2.4.0+) with *npm install -g tslint*
-* Find the path to TsLint and copy it - will be similar to *C:\Users\\[Username]\AppData\Roaming\npm\node_modules\tslint\bin\tslint* on Windows
-* Copy .jar file from target/ after build to SonarQube extensions folder
+* Install TsLint (2.4.0+) with `npm install -g tslint`, or ensure it is installed locally against your project
+** If you're installing globally, find the path to TsLint and copy it - will be similar to ```C:\Users\\[Username]\AppData\Roaming\npm\node_modules\tslint\bin\tslint``` on Windows
+* Copy .jar file (from ```target/``` after build, or downloaded from [Releases page](releases)) to SonarQube extensions folder
 * Restart SonarQube server
 * Browse to SonarQube web interface, login as Admin, hit up Settings
 * Find the TypeScript tab, paste in the TsLint path
 * Hit the Rules tab, then the TsLint rule set, then apply it to your project - alter rule activation as required
 * Make sure you have a ```tslint.json``` file next to ```sonar-project.properties```, or specify its path using the ```sonar.ts.tslintconfigpath``` setting
 * If LCOV data available, add *sonar.ts.lcov.reportpath=lcov.dat* to your sonar-project.properties file (replace lcov.dat with your lcov output, will be sought relative to the sonar-project.properties file)
-* Run sonar-runner
+* Run ```sonar-runner``` or ```sonar-scanner```
 * TsLint rule breaches should be shown in the web view
 
 ##Configuration
@@ -85,7 +83,7 @@ The plugin has so far *only been tested on Windows* and it'll be no surprise if 
 </thead>
 <tbody>
 <tr><td>sonar.ts.tslintpath</td><td><b>Recommended</b></td><td>Path to the installed copy of TsLint to use - see note below</td></tr>
-<tr><td>sonar.ts.tslintconfigpath</td><td><b>Mandatory</b></td><td>Path to the tslint.json file that configures the rules to be used in linting</td></tr>
+<tr><td>sonar.ts.tslintconfigpath</td><td><b>Recommended</b></td><td>Path to the tslint.json file that configures the rules to be used in linting - see note below</td></tr>
 <tr><td>sonar.ts.excludetypedefinitionfiles</td><td><b>Optional</b></td><td>Excludes .d.ts files from analysis, defaults to true</td></tr>
 <tr><td>sonar.ts.forceZeroCoverage</td><td><b>Optional</b></td><td>Forces code coverage percentage to zero when no report is supplied, defaults to false</td></tr>
 <tr><td>sonar.ts.ignoreNotFound</td><td><b>Optional</b></td><td>Don't set code coverage percentage to zero when file is not found in report, defaults to false</td></tr>
@@ -96,11 +94,13 @@ The plugin has so far *only been tested on Windows* and it'll be no surprise if 
 </table>
 
 ##TsLint installation and configuration
-By default, SonarTsPlugin will look for a version of TsLint installed locally within your project (i.e. in node_modules\tslint\bin), relative to the sonar-project.properties file. Thismay not be what you want, so you can set this directly via the ```sonar.ts.tslintpath``` configuration setting:
+By default, SonarTsPlugin will look for a version of TsLint installed locally within your project (i.e. in node_modules\tslint\bin), relative to the sonar-project.properties file. This may not be what you want, so you can set this directly via the ```sonar.ts.tslintpath``` configuration setting:
 * At project level
 * Globally, for all projects
 
 If analysis is failing, run ```sonar-runner``` with the ```-X -e``` options for more diagnostic information, including a note of where the plugin is searching for ```tslint```. Bear in mind that if running on a build server, the account running the build will need access to the path to ```tslint```.
+
+By default, SonarTsPlugin will look for a TsLint configuration file called tslint.json next to the sonar-project.properties file. You can override this using the ```sonar.ts.tslintconfigpath``` configuration setting if this isn't the case for your project.
 
 ## TsLint Custom Rules
 
