@@ -5,6 +5,7 @@ jdk:
 addons:
   artifacts:
     s3_region: "us-west-2"
+    target_paths: builds/$TRAVIS_BUILD_NUMBER
 
 after_success:
   - mvn cobertura:cobertura coveralls:report
