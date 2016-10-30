@@ -24,20 +24,16 @@ Suggestions for more projects (or ones with easy-to-gather code coverage info) a
 
 ##Overview
 
-This is a **not even alpha-level yet** SonarQube plugin for analysing projects with TypeScript content that supports:
+This is plugin for SonarQube 5.6+ for analysing projects with TypeScript content that supports:
 * TsLint for code quality information
 * Importing LCOV files for unit test coverage information
 * NCLOC metric generation
 
 It's unfinished in the following respects:
-* Plug-in code quality needs improved
 * Incomplete unit test coverage of the plugin
-* Exceptionally little error handling
+* No support for code duplication metrics
 
 It's presented only for the interested, and the brave.
-
-###Breaking change in 0.2###
-To more easily support changes to the rules TsLint understands, the plugin no longer generates a TsLint configuration file for you but instead you must now specify your own using the sonar.ts.tslintconfigpath configuration property (either in the web interface, or in your sonar-project.properties file).
 
 ##Requirements
 * Java 1.8+
@@ -51,7 +47,7 @@ To more easily support changes to the rules TsLint understands, the plugin no lo
 ##Installation
 * Install Node.js
 * Install TsLint (2.4.0+) with `npm install -g tslint`, or ensure it is installed locally against your project
-** If you're installing globally, find the path to TsLint and copy it - will be similar to ```C:\Users\\[Username]\AppData\Roaming\npm\node_modules\tslint\bin\tslint``` on Windows
+  * If you're installing globally, find the path to TsLint and copy it - will be similar to ```C:\Users\\[Username]\AppData\Roaming\npm\node_modules\tslint\bin\tslint``` on Windows
 * Copy .jar file (from ```target/``` after build, or downloaded from [Releases page](releases)) to SonarQube extensions folder
 * Restart SonarQube server
 * Browse to SonarQube web interface, login as Admin, hit up Settings
@@ -70,8 +66,8 @@ To more easily support changes to the rules TsLint understands, the plugin no lo
 <thead>
 <tr><th>Key</th><th></th><th>Description</th></thead>
 <tbody>
-<tr><td>sonar.ts.tslintpath</td><td><b>Recommended</b></td><td>Path to the installed copy of TsLint to use - can also be set at project level, see note below</td></tr>
-<tr><td>sonar.ts.ruleconfigs</td><td><b>Optional</b></td><td>A list of configurations to map custom TsLint rules to dedicated SonarQube rules &amp; settings - see TsLint Custom Rules section below</td></tr>
+<tr><td>sonar.ts.tslintpath</td><td><b>Recommended</b></td><td>Path to the installed copy of TsLint to use - can also be set at project level, [see note below](#tslint-installation-and-configuration)</td></tr>
+<tr><td>sonar.ts.ruleconfigs</td><td><b>Optional</b></td><td>A list of configurations to map custom TsLint rules to dedicated SonarQube rules &amp; settings - see [TsLint Custom Rules section](#tslint-custom-rules) below</td></tr>
 </tbody>
 </table>
 
