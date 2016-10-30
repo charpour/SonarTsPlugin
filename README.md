@@ -9,7 +9,7 @@ SonarQube plugin for TypeScript files
 ##Demos
 
 A live deployed demo hitting a few large open-source TypeScript projects can be found here:
-https://sonar.pablissimo.com
+[https://sonar.pablissimo.com](https://sonar.pablissimo.com).
 
 Suggestions for more projects (or ones with easy-to-gather code coverage info) appreciated!
 
@@ -48,7 +48,7 @@ It's presented only for the interested, and the brave.
 * Install Node.js
 * Install TsLint (2.4.0+) with `npm install -g tslint`, or ensure it is installed locally against your project
   * If you're installing globally, find the path to TsLint and copy it - will be similar to ```C:\Users\\[Username]\AppData\Roaming\npm\node_modules\tslint\bin\tslint``` on Windows
-* Copy .jar file (from ```target/``` after build, or downloaded from [Releases page](releases)) to SonarQube extensions folder
+* Copy .jar file (from ```target/``` after build, or downloaded from [Releases page](https://github.com/Pablissimo/SonarTsPlugin/Releases)) to SonarQube extensions folder
 * Restart SonarQube server
 * Browse to SonarQube web interface, login as Admin, hit up Settings
 * Find the TypeScript tab, paste in the TsLint path
@@ -66,8 +66,8 @@ It's presented only for the interested, and the brave.
 <thead>
 <tr><th>Key</th><th></th><th>Description</th></thead>
 <tbody>
-<tr><td>sonar.ts.tslintpath</td><td><b>Recommended</b></td><td>Path to the installed copy of TsLint to use - can also be set at project level, [see note below](#tslint-installation-and-configuration)</td></tr>
-<tr><td>sonar.ts.ruleconfigs</td><td><b>Optional</b></td><td>A list of configurations to map custom TsLint rules to dedicated SonarQube rules &amp; settings - see [TsLint Custom Rules section](#tslint-custom-rules) below</td></tr>
+<tr><td>sonar.ts.tslintpath</td><td><b>Recommended</b></td><td>Path to the installed copy of TsLint to use - can also be set at project level, see note below</td></tr>
+<tr><td>sonar.ts.ruleconfigs</td><td><b>Optional</b></td><td>A list of configurations to map custom TsLint rules to dedicated SonarQube rules &amp; settings - see TsLint Custom Rules section below</td></tr>
 </tbody>
 </table>
 
