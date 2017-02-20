@@ -40,18 +40,20 @@ public class TsCoverageSensorImpl implements TsCoverageSensor {
     }
 
     private void saveZeroValueForAllFiles(SensorContext context, Map<InputFile, Set<Integer>> nonCommentLineNumbersByFile) {
-        for (InputFile inputFile : context.fileSystem().inputFiles(context.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY))) {
+        for (InputFile inputFile : context.fileSystem().inputFiles(context.fileSystem().predicates().and(
+            context.fileSystem().predicates().hasType(InputFile.Type.MAIN),
+            context.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY)))) {
           saveZeroValue(inputFile, context, nonCommentLineNumbersByFile.get(inputFile));
         }
     }
-    
+
     private void saveZeroValue(InputFile inputFile, SensorContext context, Set<Integer> nonCommentLineNumbers) {
-          NewCoverage newCoverage = 
+          NewCoverage newCoverage =
                   context
                   .newCoverage()
                   .ofType(CoverageType.UNIT)
                   .onFile(inputFile);
-    
+
           if (nonCommentLineNumbers != null) {
               for (Integer nonCommentLineNumber : nonCommentLineNumbers) {
                   newCoverage.lineHits(nonCommentLineNumber, 0);
@@ -65,7 +67,7 @@ public class TsCoverageSensorImpl implements TsCoverageSensor {
 
           newCoverage.save();
     }
-    
+
     protected void saveMeasureFromLCOVFile(SensorContext context, Map<InputFile, Set<Integer>> nonCommentLineNumbersByFile) {
         String providedPath = context.settings().getString(TypeScriptPlugin.SETTING_LCOV_REPORT_PATH);
         File lcovFile = getIOFile(context.fileSystem().baseDir(), providedPath);
@@ -79,13 +81,15 @@ public class TsCoverageSensorImpl implements TsCoverageSensor {
 
         LCOVParser parser = getParser(context, new File[]{ lcovFile });
         Map<InputFile, NewCoverage> coveredFiles = parser.parseFile(lcovFile);
-        
+
         final boolean ignoreNotFound = isIgnoreNotFoundActivated(context);
-        
-        for (InputFile file : context.fileSystem().inputFiles(context.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY))) {
+
+        for (InputFile file : context.fileSystem().inputFiles(context.fileSystem().predicates().and(
+            context.fileSystem().predicates().hasType(InputFile.Type.MAIN),
+            context.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY)))) {
             try {
                 NewCoverage fileCoverage = coveredFiles.get(file);
-                
+
                 if (fileCoverage != null) {
                     fileCoverage.save();
                 }
@@ -135,7 +139,7 @@ public class TsCoverageSensorImpl implements TsCoverageSensor {
         if (nonCommentLineNumbersByFile == null) {
             nonCommentLineNumbersByFile = new HashMap<InputFile, Set<Integer>>();
         }
-        
+
         if (isLCOVReportProvided(ctx)) {
             saveMeasureFromLCOVFile(ctx, nonCommentLineNumbersByFile);
         } else if (isForceZeroCoverageActivated(ctx)) {

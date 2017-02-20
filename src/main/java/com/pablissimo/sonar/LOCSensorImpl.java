@@ -17,7 +17,7 @@ import org.sonar.api.measures.CoreMetrics;
 
 public class LOCSensorImpl implements LOCSensor {
     private static final Logger LOG = LoggerFactory.getLogger(LOCSensorImpl.class);
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName();
@@ -31,7 +31,7 @@ public class LOCSensorImpl implements LOCSensor {
         HashSet<Integer> toReturn = new HashSet<Integer>();
 
         int lineNumber = 0;
-        
+
         BufferedReader br;
         try {
             br = this.getReaderFromFile(inputFile);
@@ -42,7 +42,7 @@ public class LOCSensorImpl implements LOCSensor {
             do {
                 String line = br.readLine();
                 lineNumber++;
-                
+
                 if (line != null) {
                     isACommentLine = isCommentOpen;
                     line = line.trim();
@@ -90,25 +90,27 @@ public class LOCSensorImpl implements LOCSensor {
         } catch (IOException e) {
             LOG.error("Error while reading BufferedReader", e);
         }
-        
+
         return toReturn;
     }
 
     public Map<InputFile, Set<Integer>> execute(SensorContext ctx) {
         HashMap<InputFile, Set<Integer>> toReturn = new HashMap<InputFile, Set<Integer>>();
-        
-        Iterable<InputFile> affectedFiles = 
+
+        Iterable<InputFile> affectedFiles =
                 ctx
                     .fileSystem()
-                    .inputFiles(ctx.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY));
-        
+                    .inputFiles(ctx.fileSystem().predicates().and(
+                        ctx.fileSystem().predicates().hasType(InputFile.Type.MAIN),
+                        ctx.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY)));
+
         for (InputFile inputFile : affectedFiles) {
             Set<Integer> nonCommentLineNumbers = this.getNonCommentLineNumbers(inputFile);
             toReturn.put(inputFile, nonCommentLineNumbers);
-            
+
             ctx.<Integer>newMeasure().forMetric(CoreMetrics.NCLOC).on(inputFile).withValue(nonCommentLineNumbers.size()).save();
         }
-        
+
         return toReturn;
     }
 }

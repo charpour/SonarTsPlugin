@@ -23,7 +23,7 @@ public class TsLintSensor implements Sensor {
     private PathResolver resolver;
     private TsLintExecutor executor;
     private TsLintParser parser;
-    
+
     public TsLintSensor(Settings settings, PathResolver resolver, TsLintExecutor executor, TsLintParser parser) {
         this.settings = settings;
         this.resolver = resolver;
@@ -66,7 +66,9 @@ public class TsLintSensor implements Sensor {
 
         List<String> paths = new ArrayList<String>();
 
-        for (InputFile file : ctx.fileSystem().inputFiles(ctx.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY))) {
+        for (InputFile file : ctx.fileSystem().inputFiles(ctx.fileSystem().predicates().and(
+            ctx.fileSystem().predicates().hasType(InputFile.Type.MAIN),
+            ctx.fileSystem().predicates().hasLanguage(TypeScriptLanguage.LANGUAGE_KEY)))) {
             if (shouldSkipFile(file.file(), skipTypeDefFiles)) {
                 continue;
             }
@@ -74,7 +76,7 @@ public class TsLintSensor implements Sensor {
             String pathAdjusted = file.absolutePath();
             paths.add(pathAdjusted);
         }
-        
+
         List<String> jsonResults = this.executor.execute(config, paths);
 
         Map<String, List<TsLintIssue>> issues = this.parser.parse(jsonResults);
@@ -94,11 +96,11 @@ public class TsLintSensor implements Sensor {
 
             File matchingFile = ctx.fileSystem().resolvePath(filePath);
             InputFile inputFile = null;
-            
+
             if (shouldSkipFile(matchingFile, skipTypeDefFiles)) {
                 continue;
             }
-            
+
             if (matchingFile != null) {
                 try {
                     inputFile = ctx.fileSystem().inputFile(ctx.fileSystem().predicates().is(matchingFile));
@@ -108,7 +110,7 @@ public class TsLintSensor implements Sensor {
                     continue;
                 }
             }
-            
+
             if (inputFile == null) {
                 LOG.warn("TsLint reported issues against a file that isn't in the analysis set - will be ignored: " + filePath);
                 continue;
@@ -142,7 +144,7 @@ public class TsLintSensor implements Sensor {
             }
         }
     }
-    
+
     private boolean shouldSkipFile(File f, boolean skipTypeDefFiles) {
         return skipTypeDefFiles && f.getName().toLowerCase().endsWith("." + TypeScriptLanguage.LANGUAGE_DEFINITION_EXTENSION);
     }
